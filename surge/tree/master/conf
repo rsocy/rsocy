@@ -1,0 +1,48 @@
+[General]
+skip-proxy = 192.168.0.0/24, 10.0.0.0/8, 172.16.0.0/12, 127.0.0.1, localhost, *.local
+exclude-simple-hostnames = true
+internet-test-url = http://p11.douyinpic.com
+proxy-test-url = http://1.0.0.1/favicon.ico
+test-timeout = 2
+dns-server = 223.5.5.5, 114.114.114.114, system
+# encrypted-dns-server = https://223.5.5.5/ // 除非当地 ISP 有严重的 DNS 污染问题，否则没必要开启 DoH，传统 DNS 的性能最优，网络异常后恢复速度最快
+wifi-assist = true
+ipv6 = false
+http-api = 8579@127.0.0.1:6171
+http-api-tls = false
+http-api-web-dashboard = true
+allow-wifi-access = true
+allow-hotspot-access = true
+geoip-maxmind-url = https://github.com/NobyDa/geoip
+
+[Proxy Group]
+Final = select, policy-path=https://sub.rsocy.moe/share/sub/Rsocy?token=XR_UtawTvGS8DQQtixyYE, update-interval=0, no-alert=0, hidden=1, include-all-proxies=0
+
+[Rule]
+RULE-SET,https://ruleset.skk.moe/List/non_ip/telegram.conf,Final,extended-matching
+RULE-SET,https://ruleset.skk.moe/List/ip/telegram.conf,Final
+PROCESS-NAME,Telegram,REJECT-DROP
+RULE-SET,https://ruleset.skk.moe/List/non_ip/apple_cn.conf,DIRECT
+RULE-SET,https://ruleset.skk.moe/List/non_ip/apple_cdn.conf,DIRECT
+RULE-SET,https://ruleset.skk.moe/List/non_ip/microsoft_cdn.conf,DIRECT
+
+RULE-SET,https://ruleset.skk.moe/List/non_ip/reject-no-drop.conf,REJECT-NO-DROP,extended-matching
+RULE-SET,https://ruleset.skk.moe/List/non_ip/reject-drop.conf,REJECT-DROP,extended-matching
+DOMAIN-SET,https://ruleset.skk.moe/List/domainset/cdn.conf,Final,extended-matching
+RULE-SET,https://ruleset.skk.moe/List/non_ip/cdn.conf,Final,extended-matching
+DOMAIN-SET,https://ruleset.skk.moe/List/domainset/speedtest.conf,Final,extended-matching
+RULE-SET,https://ruleset.skk.moe/List/non_ip/reject.conf,REJECT,extended-matching
+DOMAIN-SET,https://ruleset.skk.moe/List/domainset/reject.conf,REJECT
+
+IP-CIDR,8.8.8.8/32,REJECT,no-resolve
+DOMAIN,ios.prod.cloud.netflix.com,REJECT
+DOMAIN,appboot.netflix.com,REJECT
+DOMAIN,ios.ngp.prod.cloud.netflix.com,REJECT
+IP-CIDR,95.161.76.100/31,REJECT,'notification-text="Fuck Telegram"',pre-matching,no-resolve
+IP-CIDR,95.161.76.100/31,REJECT-NO-DROP,no-resolve
+RULE-SET,https://ruleset.skk.moe/List/non_ip/domestic.conf,DIRECT,extended-matching
+RULE-SET,https://ruleset.skk.moe/List/non_ip/global.conf,Final,extended-matching
+FINAL,Final,dns-failed
+
+[URL Rewrite]
+^https?://www\.google\.com/ https://www.google.co.hk/ 302
